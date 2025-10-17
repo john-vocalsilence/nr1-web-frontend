@@ -97,7 +97,7 @@ export function useNr1Chat() {
       msgId: `m-bye-${Date.now()}`,
       schema: "text",
       role: "assistant",
-      content: "Obrigado pela visita. Você pode voltar depois para completar o questionário.",
+      content: "Obrigado pela visita. As suas respostas NÃO foram salvas. Você pode voltar depois para completar o questionário. Até mais!",
       timestamp: new Date().toISOString(),
     }
     setMessages((p) => [...p, bye])
