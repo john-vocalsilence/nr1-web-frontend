@@ -131,7 +131,7 @@ export default function Nr1Options({
             >
               <span className="font-medium">{val}</span>
               <span aria-hidden="true" className="text-sm">{LIKERT_EMOJI[idx]}</span>
-              {texts[idx] ? <span className="text-xs sm:text-sm text-center sm:text-left leading-tight">{texts[idx]}</span> : null}
+              {texts[idx] ? <span className="text-xs md:text-sm text-center md:text-left leading-tight">{texts[idx]}</span> : null}
             </button>
           ))}
         </div>
