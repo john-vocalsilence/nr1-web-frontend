@@ -234,13 +234,13 @@ export default function ChatPage() {
             </div>
           )}
         </div>
-        <div ref={messagesEndRef} className="h-[120px] sm:h-[80px]" />
+        <div ref={messagesEndRef} className="h-[100px] sm:h-[80px]" />
       </main>
 
       {/* Footer with blue→white gradient; options collapsible or text form */}
-      <footer ref={footerRef} className="fixed bottom-1 sm:bottom-2 left-1 sm:left-2 right-1 sm:right-2 z-40 bg-white rounded-md">
+      <footer ref={footerRef} className="fixed bottom-2 left-2 right-2 z-40 bg-white rounded-md">
         <div
-          className="mx-auto max-w-4xl mx-1 sm:mx-3 my-1 sm:my-2 flex flex-col gap-1 sm:gap-2 max-h-[45vh] sm:max-h-[50vh] overflow-hidden
+          className="mx-auto max-w-4xl mx-3 my-2 flex flex-col gap-2 max-h-[50vh] overflow-hidden
           rounded-md border border-blue-900 border-2 shadow-lg bg-blue-50 text-blue-900"
         >
           {hasOptions && currentQ ? (

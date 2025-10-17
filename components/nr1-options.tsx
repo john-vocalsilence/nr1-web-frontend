@@ -89,7 +89,7 @@ export default function Nr1Options({
       return (
         <div
           key={`opts-${version}`}
-          className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-1.5 sm:gap-2 px-1 sm:px-2 pb-1 sm:pb-2 sm:m-3"
+          className="flex flex-wrap items-center justify-center gap-2 px-2 pb-2 m-3 max-h overflow-auto"
           role="radiogroup"
           aria-label="Opções"
         >
@@ -125,13 +125,13 @@ export default function Nr1Options({
               key={val}
               type="button"
               onClick={() => onSelect(`${val} - ${texts[idx] || ""}`.trim())}
-              className="rounded-md border border-blue-200 px-2 sm:px-3 py-2 text-xs sm:text-sm bg-white text-foreground hover:bg-blue-50 flex items-center gap-1 sm:gap-2 justify-center sm:justify-start min-h-[40px]"
+              className="rounded-md border border-blue-200 px-2 sm:px-3 py-2 text-xs sm:text-sm bg-white text-foreground hover:bg-blue-50 flex items-center gap-1 sm:gap-2 justify-start min-h-[40px]"
               aria-label={`Opção ${val} ${texts[idx] ? `- ${texts[idx]}` : ""}`}
               disabled={isLoading}
             >
               <span className="font-medium">{val}</span>
               <span aria-hidden="true" className="text-sm">{LIKERT_EMOJI[idx]}</span>
-              {texts[idx] ? <span className="text-xs md:text-sm text-center md:text-left leading-tight">{texts[idx]}</span> : null}
+              {texts[idx] ? <span className="text-xs md:text-sm text-left leading-tight">{texts[idx]}</span> : null}
             </button>
           ))}
         </div>
