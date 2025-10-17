@@ -5,7 +5,7 @@ import 'styles/globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Vocal Silence - Questionário NR1',
+  title: 'Vocal Silence - AI Lab',
   description: 'Questionários para avaliação psicossocial no ambiente de trabalho.',
   icons: {
     icon: [
