@@ -50,8 +50,8 @@
             "id": 4,
             "type": "select",
             "options": [
-                "Unit A",
-                "Unit B"
+                "Unidade A",
+                "Unidade B"
             ],
             "question": "Em qual unidade você trabalha?",
             "required": true,
@@ -62,8 +62,10 @@
             "id": 5,
             "type": "select",
             "options": [
-                "My dept 1",
-                "My dept 2"
+                "Departamento A",
+                "Departamento B",
+                "Departamento C",
+                "Departamento D"
             ],
             "question": "Em qual área/setor você trabalha?",
             "required": true,

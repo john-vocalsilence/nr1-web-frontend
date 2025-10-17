@@ -5,15 +5,12 @@
             "id": 1,
             "type": "radio",
             "options": [
-                "Menor de 18 anos",
-                "18 a 24 anos",
-                "25 a 35 anos",
-                "36 a 45 anos",
-                "46 a 55 anos",
-                "Acima de 55 anos"
+                "Sim",
+                "Não",
+                "Prefiro não responder"
             ],
-            "question": "Qual a sua faixa de idade?",
-            "required": false,
+            "question": "Follow up question 1",
+            "required": true,
             "dimension": "Segmentation",
             "dimension_id": 0
         },
@@ -21,13 +18,12 @@
             "id": 2,
             "type": "radio",
             "options": [
-                "Menos de 1 ano",
-                "De 1 a 3 anos",
-                "De 3 a 5 anos",
-                "Mais de 5 anos"
+                "Sim",
+                "Não",
+                "Prefiro não responder"
             ],
-            "question": "Há quanto tempo você trabalha nesta empresa?",
-            "required": false,
+            "question": "Follow up question 2",
+            "required": true,
             "dimension": "Segmentation",
             "dimension_id": 0
         },
@@ -35,87 +31,24 @@
             "id": 3,
             "type": "radio",
             "options": [
-                "Ensino Fundamental",
-                "Ensino Médio",
-                "Ensino Técnico",
-                "Ensino Superior (Graduação)",
-                "Pós-graduação"
+                "Sim",
+                "Não",
+                "Prefiro não responder"
             ],
-            "question": "Qual o seu nível de escolaridade?",
-            "required": false,
+            "question": "Follow up question 3",
+            "required": true,
             "dimension": "Segmentation",
             "dimension_id": 0
         },
         {
             "id": 4,
-            "type": "select",
-            "options": [
-                "Unit A",
-                "Unit B"
-            ],
-            "question": "Em qual unidade você trabalha?",
-            "required": true,
-            "dimension": "Segmentation",
-            "dimension_id": 0
-        },
-        {
-            "id": 5,
-            "type": "select",
-            "options": [
-                "My dept 1",
-                "My dept 2"
-            ],
-            "question": "Em qual área/setor você trabalha?",
-            "required": true,
-            "dimension": "Segmentation",
-            "dimension_id": 0
-        },
-        {
-            "id": 6,
-            "type": "radio",
-            "options": [
-                "Presencial",
-                "Remoto",
-                "Hibrido"
-            ],
-            "question": "Qual é o seu regime de trabalho?",
-            "required": true,
-            "dimension": "Segmentation",
-            "dimension_id": 0
-        },
-        {
-            "id": 7,
-            "type": "radio",
-            "options": [
-                "PJ",
-                "CLT",
-                "Estagiário"
-            ],
-            "question": "Qual é o seu tipo de contratação?",
-            "required": true,
-            "dimension": "Segmentation",
-            "dimension_id": 0
-        },
-        {
-            "id": 8,
             "type": "radio",
             "options": [
                 "Sim",
-                "Não"
+                "Não",
+                "Prefiro não responder"
             ],
-            "question": "Trabalha por turnos? (trabalho por turnos é o revezamento de equipes em horários diferentes para manter a operação contínua)",
-            "required": true,
-            "dimension": "Segmentation",
-            "dimension_id": 0
-        },
-        {
-            "id": 9,
-            "type": "radio",
-            "options": [
-                "Sim",
-                "Não"
-            ],
-            "question": "Realiza trabalho noturno? (por exigência da empresa)",
+            "question": "Follow up question 4",
             "required": true,
             "dimension": "Segmentation",
             "dimension_id": 0
