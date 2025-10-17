@@ -59,19 +59,19 @@ export default function Nr1Options({
 
   // Open view
   return (
-    <div ref={wrapRef} className="min-h-0 flex-1 overflow-auto pr-1 m-3">
+    <div ref={wrapRef} className="min-h-0 flex-1 overflow-auto pr-1 mx-2 my-1 sm:m-3">
       {/* Top strip: tap/click to hide (small screens) */}
       {smallOnlyCollapsible && (
         <button
           type="button"
           onClick={onClose}
-          className="mx-auto mb-2 block h-2 w-10 rounded-full bg-blue-900/70 hover:bg-blue-400"
+          className="mx-auto mb-1 sm:mb-2 block h-2 w-10 rounded-full bg-blue-900/70 hover:bg-blue-400"
           aria-label="Ocultar opções"
           title="Ocultar opções"
         />
       )}
-      <div className="flex items-center justify-between mb-2 px-1">
-        <p className="text-[11px] text-blue-900">
+      <div className="flex items-center justify-between mb-1 sm:mb-2 px-1">
+        <p className="text-[10px] sm:text-[11px] text-blue-900 leading-tight">
           Selecionar uma opção envia a resposta automaticamente.
         </p>
         {currentQ.required === false && onSkip && (
@@ -89,15 +89,15 @@ export default function Nr1Options({
       return (
         <div
           key={`opts-${version}`}
-          className="flex flex-wrap items-center justify-center gap-2 px-2 pb-2 m-3 max-h overflow-auto"
+          className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-1.5 sm:gap-2 px-1 sm:px-2 pb-1 sm:pb-2 sm:m-3"
           role="radiogroup"
           aria-label="Opções"
         >
           {options.map((opt) => (
             <label
               key={`q-${currentQ.id}-opt-${opt}`}
-              className="inline-flex items-center rounded-md border border-2 border-blue-900 bg-white text-blue-900 hover:bg-blue-50
-                         px-3 py-1 text-sm cursor-pointer shadow-sm"
+              className="flex items-center justify-center rounded-md border border-2 border-blue-900 bg-white text-blue-900 hover:bg-blue-50
+                         px-2 sm:px-3 py-2 sm:py-1 text-xs sm:text-sm cursor-pointer shadow-sm min-h-[40px] sm:min-h-auto"
             >
               <input
                 type="radio"
@@ -107,7 +107,7 @@ export default function Nr1Options({
                 className="sr-only"
                 disabled={isLoading}
               />
-              <span className="whitespace-nowrap">{opt}</span>
+              <span className="text-center leading-tight">{opt}</span>
             </label>
           ))}
         </div>
@@ -119,19 +119,19 @@ export default function Nr1Options({
       const defaultTexts = ["Muito insatisfeito", "Insatisfeito", "Neutro", "Satisfeito", "Muito satisfeito"]
       const texts = options.length ? options.slice(0, 5) : defaultTexts
       return (
-        <div key={`opts-${version}`} className="grid grid-cols-1 gap-2 sm:grid-cols-5">
+        <div key={`opts-${version}`} className="grid grid-cols-1 gap-1.5 sm:gap-2 sm:grid-cols-5 px-1 sm:px-0">
           {numbers.map((val, idx) => (
             <button
               key={val}
               type="button"
               onClick={() => onSelect(`${val} - ${texts[idx] || ""}`.trim())}
-              className="rounded-md border border-blue-200 px-3 py-2 text-sm bg-white text-foreground hover:bg-blue-50 inline-flex items-center gap-2"
+              className="rounded-md border border-blue-200 px-2 sm:px-3 py-2 text-xs sm:text-sm bg-white text-foreground hover:bg-blue-50 flex items-center gap-1 sm:gap-2 justify-center sm:justify-start min-h-[40px]"
               aria-label={`Opção ${val} ${texts[idx] ? `- ${texts[idx]}` : ""}`}
               disabled={isLoading}
             >
               <span className="font-medium">{val}</span>
-              <span aria-hidden="true">{LIKERT_EMOJI[idx]}</span>
-              {texts[idx] ? <span className="text-sm text-left">{texts[idx]}</span> : null}
+              <span aria-hidden="true" className="text-sm">{LIKERT_EMOJI[idx]}</span>
+              {texts[idx] ? <span className="text-xs sm:text-sm text-center sm:text-left leading-tight">{texts[idx]}</span> : null}
             </button>
           ))}
         </div>
