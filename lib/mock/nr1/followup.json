@@ -1,0 +1,126 @@
+{
+    "id": "ff9bb6dd-36cb-49ff-b993-db9a98402aa7",
+    "questions": [
+        {
+            "id": 1,
+            "type": "radio",
+            "options": [
+                "Menor de 18 anos",
+                "18 a 24 anos",
+                "25 a 35 anos",
+                "36 a 45 anos",
+                "46 a 55 anos",
+                "Acima de 55 anos"
+            ],
+            "question": "Qual a sua faixa de idade?",
+            "required": false,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 2,
+            "type": "radio",
+            "options": [
+                "Menos de 1 ano",
+                "De 1 a 3 anos",
+                "De 3 a 5 anos",
+                "Mais de 5 anos"
+            ],
+            "question": "Há quanto tempo você trabalha nesta empresa?",
+            "required": false,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 3,
+            "type": "radio",
+            "options": [
+                "Ensino Fundamental",
+                "Ensino Médio",
+                "Ensino Técnico",
+                "Ensino Superior (Graduação)",
+                "Pós-graduação"
+            ],
+            "question": "Qual o seu nível de escolaridade?",
+            "required": false,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 4,
+            "type": "select",
+            "options": [
+                "Unit A",
+                "Unit B"
+            ],
+            "question": "Em qual unidade você trabalha?",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 5,
+            "type": "select",
+            "options": [
+                "My dept 1",
+                "My dept 2"
+            ],
+            "question": "Em qual área/setor você trabalha?",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 6,
+            "type": "radio",
+            "options": [
+                "Presencial",
+                "Remoto",
+                "Hibrido"
+            ],
+            "question": "Qual é o seu regime de trabalho?",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 7,
+            "type": "radio",
+            "options": [
+                "PJ",
+                "CLT",
+                "Estagiário"
+            ],
+            "question": "Qual é o seu tipo de contratação?",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 8,
+            "type": "radio",
+            "options": [
+                "Sim",
+                "Não"
+            ],
+            "question": "Trabalha por turnos? (trabalho por turnos é o revezamento de equipes em horários diferentes para manter a operação contínua)",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 9,
+            "type": "radio",
+            "options": [
+                "Sim",
+                "Não"
+            ],
+            "question": "Realiza trabalho noturno? (por exigência da empresa)",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        }
+   ],
+    "expiration": "2025-09-16T14:33:34.626923-03:00",
+    "organization_name": "Acme"
+}

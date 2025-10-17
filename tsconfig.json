@@ -1,0 +1,93 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "noEmit": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/components": [
+        "components"
+      ],
+      "@/components/ui/*": [
+        "components/ui/*"
+      ],
+      "@/hooks/*": [
+        "hooks/*"
+      ],
+      "@/hooks": [
+        "hooks"
+      ],
+      "@/lib/*": [
+        "lib/*"
+      ],
+      "@/lib": [
+        "lib"
+      ],
+      "@/constants/*": [
+        "lib/constants/*"
+      ],
+      "@/constants": [
+        "lib/constants"
+      ],
+      "@/api/*": [
+        "lib/api/*"
+      ],
+      "@/api": [
+        "lib/api"
+      ],
+      "@/store/*": [
+        "lib/store/*"
+      ],
+      "@/store": [
+        "lib/store"
+      ],
+      "@/interfaces/*": [
+        "lib/interfaces/*"
+      ],
+      "@/interfaces": [
+        "lib/interfaces"
+      ],
+      "@/*": [
+        "./*"
+      ]
+    },
+    "types": [
+      "node"
+    ],
+    "strict": false,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "dist",
+    "out"
+  ]
+}

@@ -1,0 +1,595 @@
+{
+    "id": "ff9bb6dd-36cb-49ff-b993-db9a98402aa7",
+    "questions": [
+        {
+            "id": 1,
+            "type": "radio",
+            "options": [
+                "Menor de 18 anos",
+                "18 a 24 anos",
+                "25 a 35 anos",
+                "36 a 45 anos",
+                "46 a 55 anos",
+                "Acima de 55 anos"
+            ],
+            "question": "Qual a sua faixa de idade?",
+            "required": false,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 2,
+            "type": "radio",
+            "options": [
+                "Menos de 1 ano",
+                "De 1 a 3 anos",
+                "De 3 a 5 anos",
+                "Mais de 5 anos"
+            ],
+            "question": "Há quanto tempo você trabalha nesta empresa?",
+            "required": false,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 3,
+            "type": "radio",
+            "options": [
+                "Ensino Fundamental",
+                "Ensino Médio",
+                "Ensino Técnico",
+                "Ensino Superior (Graduação)",
+                "Pós-graduação"
+            ],
+            "question": "Qual o seu nível de escolaridade?",
+            "required": false,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 4,
+            "type": "select",
+            "options": [
+                "Unit A",
+                "Unit B"
+            ],
+            "question": "Em qual unidade você trabalha?",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 5,
+            "type": "select",
+            "options": [
+                "My dept 1",
+                "My dept 2"
+            ],
+            "question": "Em qual área/setor você trabalha?",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 6,
+            "type": "radio",
+            "options": [
+                "Presencial",
+                "Remoto",
+                "Hibrido"
+            ],
+            "question": "Qual é o seu regime de trabalho?",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 7,
+            "type": "radio",
+            "options": [
+                "PJ",
+                "CLT",
+                "Estagiário"
+            ],
+            "question": "Qual é o seu tipo de contratação?",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 8,
+            "type": "radio",
+            "options": [
+                "Sim",
+                "Não"
+            ],
+            "question": "Trabalha por turnos? (trabalho por turnos é o revezamento de equipes em horários diferentes para manter a operação contínua)",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 9,
+            "type": "radio",
+            "options": [
+                "Sim",
+                "Não"
+            ],
+            "question": "Realiza trabalho noturno? (por exigência da empresa)",
+            "required": true,
+            "dimension": "Segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 10,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Minhas atividades diárias são variadas ou estimulantes, evitando repetição excessiva",
+            "required": true,
+            "dimension": "Autonomia e controle",
+            "dimension_id": 1
+        },
+        {
+            "id": 11,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Tenho autonomia para decidir a melhor forma de executar minhas tarefas e organizar meu trabalho diário.",
+            "required": true,
+            "dimension": "Autonomia e controle",
+            "dimension_id": 1
+        },
+        {
+            "id": 12,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "A empresa reconhece o desempenho dos colaboradores, recompensando bons resultados de forma justa.",
+            "required": true,
+            "dimension": "Reconhecimento",
+            "dimension_id": 2
+        },
+        {
+            "id": 13,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Sinto-me à vontade para expressar opiniões e preocupações sem medo de retaliações.",
+            "required": true,
+            "dimension": "Comunicação e justiça organizacional",
+            "dimension_id": 3
+        },
+        {
+            "id": 14,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "As informações importantes são compartilhadas com clareza e no tempo adequado",
+            "required": true,
+            "dimension": "Comunicação e justiça organizacional",
+            "dimension_id": 3
+        },
+        {
+            "id": 15,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Quando surgem conflitos, eles são tratados de forma justa e transparente pela liderança",
+            "required": true,
+            "dimension": "Comunicação e justiça organizacional",
+            "dimension_id": 3
+        },
+        {
+            "id": 16,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Minha liderança promove organização e um ambiente saudável de trabalho.",
+            "required": true,
+            "dimension": "Relações Interpessoais e Liderança",
+            "dimension_id": 4
+        },
+        {
+            "id": 17,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "As demandas de trabalho são equilibradas e compatíveis com o tempo disponível",
+            "required": true,
+            "dimension": "Carga e demanda de trabalho",
+            "dimension_id": 5
+        },
+        {
+            "id": 18,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Tenho o preparo e os conhecimentos necessários para realizar bem minhas funções.",
+            "required": true,
+            "dimension": "Carga e demanda de trabalho",
+            "dimension_id": 5
+        },
+        {
+            "id": 19,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Costumo finalizar minhas tarefas dentro da jornada normal de trabalho.",
+            "required": true,
+            "dimension": "Exigências de tempo no trabalho",
+            "dimension_id": 6
+        },
+        {
+            "id": 20,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Tenho pausas adequadas durante a jornada de trabalho.",
+            "required": true,
+            "dimension": "Exigências de tempo no trabalho",
+            "dimension_id": 6
+        },
+        {
+            "id": 21,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "De forma geral, meu horário de trabalho permite que eu tenha tempo suficiente para minha vida pessoal.",
+            "required": true,
+            "dimension": "Exigências de tempo no trabalho",
+            "dimension_id": 6
+        },
+        {
+            "id": 22,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "O ambiente físico (temperatura, ruído, iluminação, ergonomia) favorece meu bem-estar.",
+            "required": true,
+            "dimension": "Ambiente físico e recursos",
+            "dimension_id": 7
+        },
+        {
+            "id": 23,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Tenho acesso aos recursos e equipamentos adequados para realizar meu trabalho com segurança.",
+            "required": true,
+            "dimension": "Ambiente físico e recursos",
+            "dimension_id": 7
+        },
+        {
+            "id": 24,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Posso contar com o apoio dos meus colegas de trabalho quando encontro dificuldades nas minhas tarefas.",
+            "required": true,
+            "dimension": "Apoio social e coleguismo",
+            "dimension_id": 8
+        },
+        {
+            "id": 25,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Também posso contar com o suporte da liderança quando necessário.",
+            "required": true,
+            "dimension": "Apoio social e coleguismo",
+            "dimension_id": 8
+        },
+        {
+            "id": 26,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Existem protocolos claros para denunciar assédio e condutas inadequadas no ambiente de trabalho.",
+            "required": true,
+            "dimension": "Protocolos Contra Assédio e proteção institucional",
+            "dimension_id": 9
+        },
+        {
+            "id": 27,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Sinto que a empresa trataria de forma justa situações de assédio moral ou sexual.",
+            "required": true,
+            "dimension": "Protocolos Contra Assédio e proteção institucional",
+            "dimension_id": 9
+        },
+        {
+            "id": 28,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Sinto que todos são tratados com respeito, sem discriminação, independente de cargo, gênero, raça ou outras características pessoais.",
+            "required": true,
+            "dimension": "Diversidade e respeito",
+            "dimension_id": 10
+        },
+        {
+            "id": 29,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Consigo equilibrar meu trabalho e vida pessoal, reservando tempo suficiente para descanso e família fora do horário de trabalho.",
+            "required": true,
+            "dimension": "Equilíbrio vida-trabalho",
+            "dimension_id": 11
+        },
+        {
+            "id": 30,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Sinto-me seguro(a) em relação ao meu emprego, sem temer demissão inesperada ou injusta.",
+            "required": true,
+            "dimension": "Estabilidade no trabalho",
+            "dimension_id": 12
+        },
+        {
+            "id": 31,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "É possível lidar de forma saudável com as demandas do trabalho, sem me sentir excessivamente estressado(a).",
+            "required": true,
+            "dimension": "Estresse e ansiedade",
+            "dimension_id": 13
+        },
+        {
+            "id": 32,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Mesmo quando há estresse no trabalho, consigo manter meu rendimento nas atividades profissionais.",
+            "required": true,
+            "dimension": "Estresse e ansiedade",
+            "dimension_id": 13
+        },
+        {
+            "id": 33,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Em geral, tenho ânimo positivo no trabalho durante a maior parte do tempo.",
+            "required": true,
+            "dimension": "Ânimo e motivação",
+            "dimension_id": 14
+        },
+        {
+            "id": 34,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Sinto-me satisfeito(a) em trabalhar nesta empresa e recomendo este local de trabalho a outras pessoas.",
+            "required": true,
+            "dimension": "Ânimo e motivação",
+            "dimension_id": 14
+        },
+        {
+            "id": 35,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Tenho dormido bem, e minhas responsabilidades profissionais não prejudicam meu sono ou descanso durante a noite.",
+            "required": true,
+            "dimension": "Qualidade do sono e disposição",
+            "dimension_id": 15
+        },
+        {
+            "id": 36,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Ao final do expediente, geralmente ainda tenho disposição para realizar outras atividades fora do trabalho.",
+            "required": true,
+            "dimension": "Qualidade do sono e disposição",
+            "dimension_id": 15
+        },
+        {
+            "id": 37,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Avalio que minha saúde física está preservada, sem impactos negativos causados pelo trabalho.",
+            "required": true,
+            "dimension": "Saúde percebida",
+            "dimension_id": 16
+        },
+        {
+            "id": 38,
+            "type": "select",
+            "options": [
+                "Sim",
+                "Não",
+                "Prefiro não responder"
+            ],
+            "question": "Já presenciei ou fui alvo de situações de assédio moral ou sexual no ambiente de trabalho nesta empresa. Esta pergunta é opcional e será analisada apenas de forma anônima e coletiva. Ela serve para ajudar a empresa a entender melhor o ambiente de trabalho e tomar medidas preventivas. Nenhuma apuração individual será feita com base nessa resposta. Se quiser relatar um caso especifico, recomendamos o uso de um canal formal e seguro de denúncia — e, caso sua empresa ainda não tenha um, sugeriremos que seja criado.",
+            "required": true,
+            "dimension": "Ocorrências Críticas",
+            "dimension_id": 17
+        },
+        {
+            "id": 39,
+            "type": "select",
+            "options": [
+                "Sim",
+                "Não",
+                "Prefiro não responder"
+            ],
+            "question": "Já recebi diagnóstico médico relacionado à saúde mental, como ansiedade, depressão ou outro transtorno. Todas as respostas deste questionario são tratadas com confidencialidade. Esta pergunta, no entanto, refere-se a uma informação de saúde sensível — por isso, reforçamos que ela é opcional e será analisada apenas de forma geral, sem identificação individual. Seu anonimato está totalmente garantido.",
+            "required": true,
+            "dimension": "segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 40,
+            "type": "likert",
+            "options": [
+                "Discordo totalmente",
+                "Discordo",
+                "Neutro",
+                "Concordo",
+                "Concordo totalmente"
+            ],
+            "question": "Respondi com atenção e sinceridade às perguntas do questionário.",
+            "required": true,
+            "dimension": "segmentation",
+            "dimension_id": 0
+        },
+        {
+            "id": 41,
+            "type": "textarea",
+            "question": "Comentários",
+            "required": false,
+            "dimension": "segmentation",
+            "dimension_id": 0
+        }
+    ],
+    "expiration": "2025-09-16T14:33:34.626923-03:00",
+    "organization_name": "Acme"
+}
