@@ -1,8 +1,6 @@
 import { followUpApiUrl, nr1Url } from '@/lib/constants';
 import type { IChatMessage, ILlmMessage, IQuestionnaire, IQuestionnaireAnswer } from '@/lib/interfaces'
 
-console.log('NR1 API URL:', nr1Url);
-console.log('Follow-Up API URL:', followUpApiUrl);
 // Local iterator state per questionnaire id
 const iterState = new Map<string, { qn?: IQuestionnaire; idx: number }>()
 
@@ -27,9 +25,9 @@ function normalizeOptions(options: string[] | string | undefined): string[] {
   return []
 }
 
-export async function getQuestionnaire(qId: string): Promise<IQuestionnaire> {
+export async function getQuestionnaire(qnId: string): Promise<IQuestionnaire> {
   const base = nr1Url || process.env.NEXT_NR1_API_URL || process.env.API_URL || ''
-  const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qId)}`
+  const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qnId)}`
   const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, cache: 'no-store' })
   if (!res.ok) throw new Error(`Failed to fetch questionnaire: ${res.status}`)
   const qn = (await res.json()) as IQuestionnaire
@@ -41,15 +39,15 @@ export async function getQuestionnaire(qId: string): Promise<IQuestionnaire> {
     options: normalizeOptions(q.options as any),
   }))
 
-  const st = getState(qId)
+  const st = getState(qnId)
   st.qn = qn
   st.idx = 0
   return qn
 }
 
-export async function getNextQuestion(qId: string, payload: { message: IChatMessage | string }): Promise<ILlmMessage> {
+export async function getNextQuestion(qnId: string, payload: { message: IChatMessage | string }): Promise<ILlmMessage> {
   // purely local progression over the already-fetched questionnaire
-  const st = getState(qId)
+  const st = getState(qnId)
   if (!st.qn) throw new Error('Questionnaire not loaded')
 
   // If message is from user for a previous question, we just advance the index
@@ -73,7 +71,7 @@ export async function getNextQuestion(qId: string, payload: { message: IChatMess
       msgId: `qmsg-${Date.now()}`,
       schema: 'question',
       role: 'assistant',
-      qId: `q-${q.id}`,
+      qId: q.id,
       content: q.question,
       type: q.type as any,
       options: normalizeOptions(q.options as any),
@@ -84,9 +82,12 @@ export async function getNextQuestion(qId: string, payload: { message: IChatMess
 
 export async function submitAnswers(qnId: string, answers: IQuestionnaireAnswer[]) {
   const base = nr1Url || process.env.NEXT_NR1_API_URL || process.env.API_URL || ''
-  const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qnId)}`
+  const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qnId)}/`
+  console.log('[submitAnswers]', { qnId, answers })
+  console.log(answers.map(a => typeof a.id))
+
   const res = await fetch(url, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ answers }),
   })

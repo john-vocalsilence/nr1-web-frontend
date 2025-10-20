@@ -16,7 +16,7 @@ export type IntroData = { org: string; dueStr: string; type: string }
 
 export function useNr1Chat() {
   const router = useRouter()
-  const { qId } = useParams<{ qId: string }>()
+  const { qnId } = useParams<{ qnId: string }>()
   const redirectUrl = "/"
 
   const { questionnaire, currentQuestionId, currentAnswerId, setCurrentQuestionId, setCurrentAnswerId, setQuestionnaire, answers, addAnswer, reset, submitted, markSubmitted } = useNr1Store()
@@ -38,7 +38,7 @@ export function useNr1Chat() {
       setIsLoading(true)
       reset()
       try {
-        const qn = await nr1Api.getQuestionnaire(String(qId))
+        const qn = await nr1Api.getQuestionnaire(String(qnId))
         setQuestionnaire(qn)
         const org = qn.organization_name || "sua organização"
         const due = qn.expiration ? new Date(qn.expiration) : null
@@ -54,7 +54,7 @@ export function useNr1Chat() {
       }
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [qId])
+  }, [qnId])
 
   function handleLlmResponse(res: ILlmMessage) {
     if (!res) return
@@ -85,7 +85,7 @@ export function useNr1Chat() {
     setAwaitingConsent(false)
     setIsLoading(true)
     try {
-      const res = await nr1Api.getNextQuestion(String(qId), { message: "start" })
+      const res = await nr1Api.getNextQuestion(String(qnId), { message: "start" })
       handleLlmResponse(res)
     } finally {
       setIsLoading(false)
@@ -111,7 +111,7 @@ export function useNr1Chat() {
     setSessionDone(true)
     setIsLoading(true)
     try {
-      await nr1Api.submitAnswers(String(qId), answers || [])
+      await nr1Api.submitAnswers(String(qnId), answers || [])
     } finally {
       const thanks: IChatMessage = {
         msgId: `m-thanks-${Date.now()}`,
@@ -134,12 +134,12 @@ export function useNr1Chat() {
   async function finalizeAndMaybeFollowUp() {
     setIsLoading(true)
     try {
-      await nr1Api.submitAnswers(String(qId), answers || [])
+      await nr1Api.submitAnswers(String(qnId), answers || [])
       markSubmitted()
 
       let followRes: IFollowUpResponse | null = null
       if ((nr1Api as any).requestFollowUpQuestionnaire) {
-        followRes = await (nr1Api as any).requestFollowUpQuestionnaire(String(qId), answers || [])
+        followRes = await (nr1Api as any).requestFollowUpQuestionnaire(String(qnId), answers || [])
       }
 
       if (!followRes) {
@@ -179,7 +179,7 @@ export function useNr1Chat() {
           } as IChatMessage,
         ])
 
-        const res = await nr1Api.getNextQuestion(String(qId), { message: "startFollowUp" })
+        const res = await nr1Api.getNextQuestion(String(qnId), { message: "startFollowUp" })
         handleLlmResponse(res)
         setIsLoading(false)
         return
@@ -241,7 +241,7 @@ export function useNr1Chat() {
     setIsLoading(true)
 
     try {
-      const res = await nr1Api.getNextQuestion(String(qId), { message: userMessage })
+      const res = await nr1Api.getNextQuestion(String(qnId), { message: userMessage })
       if (!res?.message || !isQuestionMessage(res.message)) {
         if (res?.message) setMessages((p) => [...p, res.message])
         await finalizeAndMaybeFollowUp()

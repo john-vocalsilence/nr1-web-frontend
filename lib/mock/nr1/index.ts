@@ -50,11 +50,11 @@ function normalizeQuestionnaire(src: IQuestionnaire): IQuestionnaire {
   return qn
 }
 
-export function getMockQuestionnaire(qId: string): IQuestionnaire {
+export function getMockQuestionnaire(qnId: string): IQuestionnaire {
   const qn = normalizeQuestionnaire(baseQn)
-  activeQuestionnaires.set(qId, qn)
-  followUpServed.delete(qId)
-  resetProgress(qId)
+  activeQuestionnaires.set(qnId, qn)
+  followUpServed.delete(qnId)
+  resetProgress(qnId)
   return qn
 }
 
@@ -65,43 +65,43 @@ function getMockFollowUpQuestionnaire(): IQuestionnaire {
 // Track progress per questionnaire id using a simple counter
 const progressMap = new Map<string, number>()
 
-function getProgress(qId: string) {
-  return progressMap.get(qId) ?? 0
+function getProgress(qnId: string) {
+  return progressMap.get(qnId) ?? 0
 }
-function setProgress(qId: string, value: number) {
-  progressMap.set(qId, value)
+function setProgress(qnId: string, value: number) {
+  progressMap.set(qnId, value)
 }
-export function resetProgress(qId?: string) {
-  if (qId) progressMap.delete(qId)
+export function resetProgress(qnId?: string) {
+  if (qnId) progressMap.delete(qnId)
   else progressMap.clear()
 }
 
-export function requestFollowUp(qId: string, answers: IQuestionnaireAnswer[]): IFollowUpResponse {
+export function requestFollowUp(qnId: string, answers: IQuestionnaireAnswer[]): IFollowUpResponse {
   if (!answers?.length) {
     return { message: 'Não há questionário de acompanhamento.' }
   }
 
-  if (followUpServed.has(qId)) {
+  if (followUpServed.has(qnId)) {
     return { message: 'Não há questionário de acompanhamento.' }
   }
 
   const shouldSendFollowUp = answers.length >= 5
   if (!shouldSendFollowUp) {
-    followUpServed.add(qId)
+    followUpServed.add(qnId)
     return { message: 'Não há questionário de acompanhamento.' }
   }
 
-  followUpServed.add(qId)
+  followUpServed.add(qnId)
   const followUpQn = getMockFollowUpQuestionnaire()
-  activeQuestionnaires.set(qId, followUpQn)
-  resetProgress(qId)
+  activeQuestionnaires.set(qnId, followUpQn)
+  resetProgress(qnId)
 
   return { questionnaire: followUpQn }
 }
 
-function getNextQuestionByCounter(qId: string): IQuestionnaireQuestion | null {
-  const qn = activeQuestionnaires.get(qId) ?? getMockQuestionnaire(qId)
-  const idx = getProgress(qId)
+function getNextQuestionByCounter(qnId: string): IQuestionnaireQuestion | null {
+  const qn = activeQuestionnaires.get(qnId) ?? getMockQuestionnaire(qnId)
+  const idx = getProgress(qnId)
   if (idx >= qn.questions.length) return null
   return qn.questions[idx]
 }
@@ -113,7 +113,8 @@ export async function mockLlmResponse(
 ): Promise<ILlmMessage> {
   // Log the payload for visibility during development
   // eslint-disable-next-line no-console
-  console.log('[mockLlmResponse]', { qnId: qnId, payload })
+  // console.log('[userMessage]', { qnId, payload })
+  // console.log('[llmMessage]', 'computing response...')
 
   // simulate latency
   await new Promise((res) => setTimeout(res, 250))
@@ -137,7 +138,7 @@ export async function mockLlmResponse(
     msgId: `qmsg-${Date.now()}`,
     schema: 'question',
     role: 'assistant',
-    qId: `${next.id}`,
+    qId: next.id,
     content: next.question,
     type: next.type,
     options: normalizeOptions(next.options),
