@@ -84,7 +84,6 @@ export async function submitAnswers(qnId: string, answers: IQuestionnaireAnswer[
   const base = nr1Url || process.env.NEXT_NR1_API_URL || process.env.API_URL || ''
   const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qnId)}/`
   console.log('[submitAnswers]', { qnId, answers })
-  console.log(answers.map(a => typeof a.id))
 
   const res = await fetch(url, {
     method: 'PATCH',

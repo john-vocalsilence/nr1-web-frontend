@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
-import { mockApi as nr1Api } from "@/lib/api"
+import { nr1Api } from "@/lib/api"
 import { useNr1Store } from "@/lib/store/nr1"
 import { normalizeOptions } from "@/lib/utils/nr1"
 import {

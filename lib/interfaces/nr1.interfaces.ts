@@ -3,7 +3,7 @@ import { IChatMessage } from "./chat.interfaces"
 type TInputType = 'radio' | 'select' | 'likert' | 'textarea'
 
 interface IQuestionnaireQuestion {
-	id: number
+	id: number | string
 	question: string
 	options: string[] | string
 	required: boolean
@@ -21,7 +21,7 @@ interface IQuestionnaire {
 }
 
 interface IQuestionnaireAnswer {
-	id: number
+	id: number | string
 	response: number | string
 }
 
