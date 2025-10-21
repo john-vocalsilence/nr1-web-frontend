@@ -17,6 +17,7 @@ export default function ChatPage() {
     messages,
     input,
     isLoading,
+    isTyping,
     currentQ,
     intro,
     awaitingConsent,
@@ -31,6 +32,7 @@ export default function ChatPage() {
     submitAnswer,
     skipQuestion,
   } = useNr1Chat()
+
 
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [showOptions, setShowOptions] = useState(true)
@@ -212,7 +214,7 @@ export default function ChatPage() {
             ))
           )}
 
-          {isLoading && !awaitingConsent && (
+          {isTyping && (
             <div className="mt-2 flex gap-3">
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarFallback className="bg-primary/10">

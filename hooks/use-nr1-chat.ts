@@ -11,6 +11,7 @@ import {
   type IQuestionnaireQuestion,
   IInternalMessage,
 } from "@/lib/interfaces"
+import { set } from "date-fns"
 
 export type IntroData = { org: string; dueStr: string; type: string }
 
@@ -24,6 +25,7 @@ export function useNr1Chat() {
   const [messages, setMessages] = useState<IChatMessage[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
   const [currentQ, setCurrentQ] = useState<IQuestionnaireQuestion | null>(null)
   const [awaitingConsent, setAwaitingConsent] = useState(true)
   const [sessionDone, setSessionDone] = useState(false)
@@ -32,6 +34,36 @@ export function useNr1Chat() {
   const options = useMemo(() => normalizeOptions(currentQ?.options ?? []), [currentQ])
   const hasOptions = !!currentQ && currentQ.type && currentQ.type !== "textarea" && options.length > 0
   const showFreeText = !awaitingConsent && !!currentQ && (!currentQ.type || currentQ.type === "textarea")
+
+  // Helper function to calculate typing delay based on message length
+  const calculateTypingDelay = (text: string): number => {
+    const baseDelay = 400 // Minimum delay
+    const wordsPerMinute = 1200 // Simulated reading/typing speed
+    const words = text.split(' ').length
+    const readingTime = (words / wordsPerMinute) * 60 * 1000 // Convert to milliseconds
+    return Math.max(baseDelay, Math.min(readingTime, 3000)) // Cap at 3 seconds
+  }
+
+  // Helper function to add message with typing delay
+  const addMessageWithTyping = async (message: IChatMessage): Promise<void> => {
+    if (!message.content) {
+      // No delay for empty messages
+      setMessages((p) => [...p, message])
+      return
+    }
+
+    const delay = calculateTypingDelay(message.content)
+    
+    // Show typing indicator
+    setIsTyping(true)
+    
+    // Wait for typing delay
+    await new Promise(resolve => setTimeout(resolve, delay))
+    
+    // Hide typing indicator and add message
+    setIsTyping(false)
+    setMessages((p) => [...p, message])
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -56,16 +88,18 @@ export function useNr1Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qnId])
 
-  function handleLlmResponse(res: ILlmMessage) {
+  async function handleLlmResponse(res: ILlmMessage) {
     if (!res) return
     if (res.message && isInternalMessage(res.message)) {
       let msg = res.message as IInternalMessage
       if (msg.code === 'event_no_next_question') {
         !questionnaire?.id.startsWith('comp-') ? submitNr1AndGetFollowUp() : submitFollowUpAndRedirect()
-        return
       }
+      return
     }
-    if (res.message) setMessages((p) => [...p, res.message])
+    if (res.message) {
+      await addMessageWithTyping(res.message)
+    }
     if (res.message && isQuestionMessage(res.message)) {
       setCurrentQuestionId(res.message.qId)
       setCurrentQ({
@@ -76,7 +110,6 @@ export function useNr1Chat() {
       } as IQuestionnaireQuestion)
       return
     }
-    
   }
 
   async function consentAndStartNr1() {
@@ -89,11 +122,13 @@ export function useNr1Chat() {
       content: `Bem-vindo ao Questionário ${intro.type} da organização ${intro.org}. Vamos começar!`,
       timestamp: new Date().toISOString(),
     }
-    setMessages((prev) => [...prev, introMsg])
+    
+    await addMessageWithTyping(introMsg)
+    
     setIsLoading(true)
     try {
       const res = await nr1Api.getNextQuestion()
-      handleLlmResponse(res)
+      await handleLlmResponse(res)
     } finally {
       setIsLoading(false)
     }
@@ -107,7 +142,8 @@ export function useNr1Chat() {
       content: "Obrigado pela visita. As suas respostas NÃO foram salvas. Você pode voltar depois para refazer o questionário. Até mais!",
       timestamp: new Date().toISOString(),
     }
-    setMessages((p) => [...p, bye])
+    
+    await addMessageWithTyping(bye)
     setAwaitingConsent(true)
     useNr1Store.getState().reset()
     setTimeout(() => router.push(redirectUrl), 1500)
@@ -130,18 +166,18 @@ export function useNr1Chat() {
       setCurrentQ(null)
       setQuestionnaire(nextQn)
       
-      setMessages((prev) => [
-        ...prev,
-        {
-          msgId: `m-start-followup-${Date.now()}`,
-          schema: "text",
-          role: "assistant",
-          content: "Há um questionário de acompanhamento. Vamos continuar.",
-          timestamp: new Date().toISOString(),
-        } as IChatMessage,
-      ])
+      const followUpMsg: IChatMessage = {
+        msgId: `m-start-followup-${Date.now()}`,
+        schema: "text",
+        role: "assistant",
+        content: "Há um questionário de acompanhamento. Vamos continuar.",
+        timestamp: new Date().toISOString(),
+      }
+      
+      await addMessageWithTyping(followUpMsg)
+      
       const res = await nr1Api.getNextQuestion()
-      handleLlmResponse(res)
+      await handleLlmResponse(res)
     } finally {
       setIsLoading(false)
     }
@@ -168,15 +204,16 @@ export function useNr1Chat() {
       content: "Obrigado por completar o questionário.",
       timestamp: new Date().toISOString(),
     }
-    setMessages((p) => [...p, thanks])
+    
+    await addMessageWithTyping(thanks)
     setIsLoading(false)
     reset()
-    setTimeout(() => router.push(redirectUrl), 3000)
+    setTimeout(() => router.push(redirectUrl), 2000)
   }
 
   const handleSubmit = async (e?: React.FormEvent, provided?: string | number) => {
     e?.preventDefault()
-    if (!questionnaire || isLoading || !currentQ || submitted) return
+    if (!questionnaire || isLoading || isTyping || !currentQ || submitted) return
 
     if (typeof provided === "undefined") {
       provided = input.trim()
@@ -208,21 +245,20 @@ export function useNr1Chat() {
     // Loop to get next question
     try {
       const res = await nr1Api.getNextQuestion()
-      handleLlmResponse(res)
+      await handleLlmResponse(res)
     } finally {
       setIsLoading(false)
     }
   }
 
   const submitAnswer = async ( value: string | number ) => {
-    if (!currentQ || isLoading || submitted) return
+    if (!currentQ || isLoading || isTyping || submitted) return
     return handleSubmit(undefined, value)
   }
 
   const canSkip = !!currentQ && (!currentQ.required)
   const skipQuestion = async () => {
-    if (!currentQ || isLoading || submitted) return
-    // console.log('[skipQuestion]', currentQ.id)
+    if (!currentQ || isLoading || isTyping || submitted) return
     
     // Add answer without creating a user message
     addAnswer({ id: currentQ.id, response: '' })
@@ -231,17 +267,19 @@ export function useNr1Chat() {
     // Get next question directly without showing user message
     try {
       const res = await nr1Api.getNextQuestion()
-      handleLlmResponse(res)
+      await handleLlmResponse(res)
     } finally {
       setIsLoading(false)
     }
   }
+
   return {
     // state
     questionnaire,
     messages,
     input,
     isLoading,
+    isTyping,
     currentQ,
     intro,
     awaitingConsent,
@@ -256,6 +294,7 @@ export function useNr1Chat() {
     submitAnswer,
     canSkip,
     skipQuestion,
-    setMessages, // in case page wants to append system messages
+    setMessages, // in case page wants to add messages directly (bypassing typing delay)
+    addMessageWithTyping, // for manual message addition with typing effect
   }
 }
