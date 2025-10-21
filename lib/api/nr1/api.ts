@@ -37,7 +37,7 @@ export async function getNr1Questionnaire(qnId: string): Promise<IQuestionnaire>
 
 export async function getFollowUpQuestionnaire(qnId: string, answers: IQuestionnaireAnswer[]): Promise<IQuestionnaire> {
   const base = followUpApiUrl || process.env.NEXT_FOLLOW_UP_API_URL || process.env.API_URL || ''
-  const url = `${base.replace(/\/$/, '')}/assessment`
+  const url = `${base.replace(/\/$/, '')}/`
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -127,16 +127,13 @@ export async function submitNr1Answers(qnId: string, answers: IQuestionnaireAnsw
 }
 
 export async function submitFollowUpAnswers(qnId: string, answers: IQuestionnaireAnswer[]) {
-  const base = nr1Url || process.env.NEXT_NR1_API_URL || process.env.API_URL || ''
-  const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qnId)}/`
-  // console.log('[submitFollowUpAnswers]', { qnId, answers })
-
+  const base = followUpApiUrl || process.env.NEXT_FOLLOW_UP_API_URL || process.env.API_URL || ''
+  const url = `${base.replace(/\/$/, '')}/`
   const res = await fetch(url, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ answers }),
+    body: JSON.stringify({ questionnaire_id: qnId, answers }),
   })
   if (!res.ok) throw new Error(`Failed to submit answers: ${res.status}`)
   return await res.json()
 }
-
