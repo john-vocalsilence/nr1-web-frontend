@@ -33,7 +33,6 @@ export default function ChatPage() {
   } = useNr1Chat()
 
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [optionsVersion, setOptionsVersion] = useState(0)
   const [showOptions, setShowOptions] = useState(true)
   const [isSmallScreen, setIsSmallScreen] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -85,10 +84,6 @@ export default function ChatPage() {
     mq.addEventListener("change", onChange)
     return () => mq.removeEventListener("change", onChange)
   }, [])
-
-  useEffect(() => {
-    setOptionsVersion((v) => v + 1)
-  }, [currentQ?.id])
 
   // Auto-enter fullscreen on mobile devices
   useEffect(() => {
@@ -249,7 +244,6 @@ export default function ChatPage() {
                 currentQ={currentQ}
                 options={options}
                 isLoading={isLoading}
-                version={optionsVersion}
                 onSelect={(value) => submitAnswer(value)}
                 onSkip={(!currentQ?.required) ? () => submitAnswer('Continuar') : undefined}
                 isOpen={showOptions || !isSmallScreen}      // always open on md+

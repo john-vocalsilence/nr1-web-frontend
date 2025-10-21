@@ -6,7 +6,6 @@ type Props = {
   currentQ: IQuestionnaireQuestion
   options: string[]
   isLoading: boolean
-  version: number
   onSelect: (value: string | number) => void
   onSkip?: () => void
   isOpen: boolean
@@ -19,7 +18,6 @@ export default function Nr1Options({
   currentQ,
   options,
   isLoading,
-  version,
   onSelect,
   onSkip,
   isOpen,
@@ -88,7 +86,7 @@ export default function Nr1Options({
     if (currentQ.type === "radio" || currentQ.type === "select") {
       return (
         <div
-          key={`opts-${version}`}
+          key={`opts-${currentQ.id}`}
           className="flex flex-wrap items-center justify-center gap-2 px-2 pb-2 m-3 max-h overflow-auto"
           role="radiogroup"
           aria-label="Opções"
@@ -119,7 +117,7 @@ export default function Nr1Options({
       const defaultTexts = ["Muito insatisfeito", "Insatisfeito", "Neutro", "Satisfeito", "Muito satisfeito"]
       const texts = options.length ? options.slice(0, 5) : defaultTexts
       return (
-        <div key={`opts-${version}`} className="grid grid-cols-1 gap-1.5 sm:gap-2 sm:grid-cols-5 px-1 sm:px-0">
+        <div key={`opts-${currentQ.id}`} className="grid grid-cols-1 gap-1.5 sm:gap-2 sm:grid-cols-5 px-1 sm:px-0">
           {numbers.map((val, idx) => (
             <button
               key={val}
