@@ -5,11 +5,11 @@ import { useNr1Store } from "@/lib/store/nr1"
 import { normalizeOptions } from "@/lib/utils/nr1"
 import {
   isQuestionMessage,
-  isTextMessage,
+  isInternalMessage,
   type IChatMessage,
   type ILlmMessage,
   type IQuestionnaireQuestion,
-  type IFollowUpResponse,
+  IInternalMessage,
 } from "@/lib/interfaces"
 
 export type IntroData = { org: string; dueStr: string; type: string }
@@ -19,7 +19,7 @@ export function useNr1Chat() {
   const { qnId } = useParams<{ qnId: string }>()
   const redirectUrl = "/"
 
-  const { questionnaire, currentQuestionId, currentAnswerId, setCurrentQuestionId, setCurrentAnswerId, setQuestionnaire, answers, addAnswer, reset, submitted, markSubmitted } = useNr1Store()
+  const { questionnaire, setCurrentQuestionId, setQuestionnaire, answers, addAnswer, reset, submitted, markSubmitted } = useNr1Store()
 
   const [messages, setMessages] = useState<IChatMessage[]>([])
   const [input, setInput] = useState("")
@@ -38,7 +38,7 @@ export function useNr1Chat() {
       setIsLoading(true)
       reset()
       try {
-        const qn = await nr1Api.getQuestionnaire(String(qnId))
+        const qn = await nr1Api.getNr1Questionnaire(String(qnId))
         setQuestionnaire(qn)
         const org = qn.organization_name || "sua organização"
         const due = qn.expiration ? new Date(qn.expiration) : null
@@ -60,20 +60,26 @@ export function useNr1Chat() {
     if (!res) return
     if (res.message) setMessages((p) => [...p, res.message])
     if (res.message && isQuestionMessage(res.message)) {
-      console.log(res.message)
+      setCurrentQuestionId(res.message.qId)
       setCurrentQ({
-        id: res.message.qId ?? Date.now(),
+        id: res.message.qId,
         question: res.message.content,
         type: res.message.type,
         options: res.message.options ?? [],
       } as IQuestionnaireQuestion)
       return
     }
-    if (res.message && isTextMessage(res.message) && currentQ) finalizeAndMaybeFollowUp()
+    if (res.message && isInternalMessage(res.message)) {
+      let msg = res.message as IInternalMessage
+      if (msg.code === 'event_no_next_question') {
+        !questionnaire?.id.startsWith('comp-') ? submitNr1AndGetFollowUp() : submitFollowUpAndRedirect()
+      }
+    }
   }
 
-  async function startQuestions() {
+  async function consentAndStartNr1() {
     if (!intro) return
+    setAwaitingConsent(false)
     const introMsg: IChatMessage = {
       msgId: `m-introchat-${Date.now()}`,
       schema: "text",
@@ -82,10 +88,9 @@ export function useNr1Chat() {
       timestamp: new Date().toISOString(),
     }
     setMessages((prev) => [...prev, introMsg])
-    setAwaitingConsent(false)
     setIsLoading(true)
     try {
-      const res = await nr1Api.getNextQuestion(String(qnId), { message: "start" })
+      const res = await nr1Api.getNextQuestion()
       handleLlmResponse(res)
     } finally {
       setIsLoading(false)
@@ -97,121 +102,74 @@ export function useNr1Chat() {
       msgId: `m-bye-${Date.now()}`,
       schema: "text",
       role: "assistant",
-      content: "Obrigado pela visita. As suas respostas NÃO foram salvas. Você pode voltar depois para completar o questionário. Até mais!",
+      content: "Obrigado pela visita. As suas respostas NÃO foram salvas. Você pode voltar depois para refazer o questionário. Até mais!",
       timestamp: new Date().toISOString(),
     }
     setMessages((p) => [...p, bye])
-    setAwaitingConsent(false)
-    setCurrentQ(null)
+    setAwaitingConsent(true)
+    useNr1Store.getState().reset()
     setTimeout(() => router.push(redirectUrl), 1500)
   }
 
-  async function completeAndRedirect() {
-    if (sessionDone) return
-    setSessionDone(true)
+  async function submitNr1AndGetFollowUp() {
     setIsLoading(true)
+    const payload = useNr1Store.getState().answers
     try {
-      await nr1Api.submitAnswers(String(qnId), answers || [])
-    } finally {
-      const thanks: IChatMessage = {
-        msgId: `m-thanks-${Date.now()}`,
-        schema: "text",
-        role: "assistant",
-        content: "Obrigado por completar o questionário.",
-        timestamp: new Date().toISOString(),
+      await nr1Api.submitNr1Answers(String(qnId), payload || [])
+      markSubmitted()
+
+      const nextQn = await nr1Api.getFollowUpQuestionnaire(String(qnId), payload || [])
+      
+      if (!nextQn || !nextQn.questions || nextQn.questions.length === 0) {
+        return await gracefulExit()
       }
-      setMessages((p) => [...p, thanks])
+      
+      reset()
+      setCurrentQ(null)
+      setQuestionnaire(nextQn)
+      
+      setMessages((prev) => [
+        ...prev,
+        {
+          msgId: `m-start-followup-${Date.now()}`,
+          schema: "text",
+          role: "assistant",
+          content: "Há um questionário de acompanhamento. Vamos continuar.",
+          timestamp: new Date().toISOString(),
+        } as IChatMessage,
+      ])
+      const res = await nr1Api.getNextQuestion()
+      handleLlmResponse(res)
+    } finally {
       setIsLoading(false)
-      try {
-        const resetStore = (useNr1Store.getState() as any)?.reset
-        if (typeof resetStore === "function") resetStore()
-        else useNr1Store.setState({ questionnaire: null, answers: [], loaded: false })
-      } catch {}
-      setTimeout(() => router.push(redirectUrl), 1500)
     }
   }
 
-  async function finalizeAndMaybeFollowUp() {
+  async function submitFollowUpAndRedirect() {
     setIsLoading(true)
+    const payload = useNr1Store.getState().answers
     try {
-      await nr1Api.submitAnswers(String(qnId), answers || [])
-      markSubmitted()
-
-      let followRes: IFollowUpResponse | null = null
-      followRes = await (nr1Api as any).requestFollowUpQuestionnaire(String(qnId), answers || [])
-      
-      if (!followRes) {
-        setIsLoading(false)
-        return completeAndRedirect()
-      }
-
-      if (followRes?.questionnaire && Array.isArray(followRes.questionnaire?.questions)) {
-        const nextQn = followRes.questionnaire
-        setMessages((prev) => [
-          ...prev,
-          {
-            msgId: `m-followup-${Date.now()}`,
-            schema: "text",
-            role: "assistant",
-            content: "Há um questionário de acompanhamento. Vamos continuar.",
-            timestamp: new Date().toISOString(),
-          } as IChatMessage,
-        ])
-        setQuestionnaire(nextQn)
-        useNr1Store.setState({ answers: [], submitted: false, currentQuestionId: null, currentAnswerId: null })
-        setCurrentQ(null)
-
-        const org = nextQn.organization_name || "sua organização"
-        const due = nextQn.expiration ? new Date(nextQn.expiration) : null
-        const dueStr = due
-          ? due.toLocaleString([], { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" })
-          : "em breve"
-        setMessages((prev) => [
-          ...prev,
-          {
-            msgId: `m-followup-intro-${Date.now()}`,
-            schema: "text",
-            role: "assistant",
-            content: `Questionário de acompanhamento — Organização: ${org}. Data limite: ${dueStr}.`,
-            timestamp: new Date().toISOString(),
-          } as IChatMessage,
-        ])
-
-        const res = await nr1Api.getNextQuestion(String(qnId), { message: "startFollowUp" })
-        handleLlmResponse(res)
-        setIsLoading(false)
-        return
-      }
-
-      if (followRes?.message) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            msgId: `m-no-followup-${Date.now()}`,
-            schema: "text",
-            role: "assistant",
-            content: typeof followRes.message === "string" ? followRes.message : "Não há questionário de acompanhamento.",
-            timestamp: new Date().toISOString(),
-          } as IChatMessage,
-        ])
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          {
-            msgId: `m-no-followup-generic-${Date.now()}`,
-            schema: "text",
-            role: "assistant",
-            content: "Não há questionário de acompanhamento.",
-            timestamp: new Date().toISOString(),
-          } as IChatMessage,
-        ])
-      }
+      await nr1Api.submitFollowUpAnswers(String(qnId), payload || [])
+    } finally {
       setIsLoading(false)
-      await completeAndRedirect()
-    } catch {
-      setIsLoading(false)
-      await completeAndRedirect()
+      await gracefulExit()
     }
+  }
+
+  async function gracefulExit() {
+    if (sessionDone) return
+    setSessionDone(true)
+    const thanks: IChatMessage = {
+      msgId: `m-thanks-${Date.now()}`,
+      schema: "text",
+      role: "assistant",
+      content: "Obrigado por completar o questionário.",
+      timestamp: new Date().toISOString(),
+    }
+    setMessages((p) => [...p, thanks])
+    setIsLoading(false)
+    reset()
+    setTimeout(() => router.push(redirectUrl), 1500)
   }
 
   const handleSubmit = async (e?: React.FormEvent, provided?: string | number) => {
@@ -245,14 +203,10 @@ export function useNr1Chat() {
     setInput("")
     setIsLoading(true)
 
+    // Loop to get next question
     try {
-      const res = await nr1Api.getNextQuestion(String(qnId), { message: userMessage })
-      if (!res?.message || !isQuestionMessage(res.message)) {
-        if (res?.message) setMessages((p) => [...p, res.message])
-        await finalizeAndMaybeFollowUp()
-      } else {
-        handleLlmResponse(res)
-      }
+      const res = await nr1Api.getNextQuestion()
+      handleLlmResponse(res)
     } finally {
       setIsLoading(false)
     }
@@ -267,6 +221,7 @@ export function useNr1Chat() {
   const skipQuestion = async () => {
     if (!currentQ || isLoading || submitted) return
     // save empty/placeholder answer for non-required, then advance
+    console.log('[skipQuestion]', currentQ.id)
     addAnswer({ id: currentQ.id, response: '' })
     return handleSubmit(undefined, '')
   }
@@ -285,7 +240,7 @@ export function useNr1Chat() {
     showFreeText,
     // actions
     setInput,
-    startQuestions,
+    consentAndStartNr1,
     leaveFlow,
     handleSubmit,
     submitAnswer,

@@ -36,3 +36,7 @@ export function isTextMessage(m: IChatMessage): m is ITextMessage {
 export function isQuestionMessage(m: IChatMessage): m is IQuestionMessage {
   return (m as any)?.schema === 'question'
 }
+
+export function isInternalMessage(m: IChatMessage): m is IInternalMessage {
+  return (m as any)?.schema === 'internal'
+}

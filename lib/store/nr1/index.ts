@@ -9,8 +9,8 @@ type Nr1State = {
   answers: IQuestionnaireAnswer[]
   submitted: boolean
   setQuestionnaire: (q: IQuestionnaire) => void
-  setCurrentQuestionId: (id: number | string) => void
-  setCurrentAnswerId: (id: number | string) => void
+  setCurrentQuestionId: (id: number | string | null) => void
+  setCurrentAnswerId: (id: number | string | null) => void
   addAnswer: (a: IQuestionnaireAnswer) => void
   markSubmitted: () => void
   reset: () => void

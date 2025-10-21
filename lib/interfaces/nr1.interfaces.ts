@@ -16,8 +16,8 @@ interface IQuestionnaireQuestion {
 interface IQuestionnaire {
 	id: string
 	questions: IQuestionnaireQuestion[]
-	expiration: string
-	organization_name: string
+	expiration?: string
+	organization_name?: string
 }
 
 interface IQuestionnaireAnswer {
@@ -25,13 +25,8 @@ interface IQuestionnaireAnswer {
 	response: number | string
 }
 
-interface IFollowUpResponse {
-	questionnaire?: IQuestionnaire
-	message?: string
-}
-
 interface ILlmMessage {
 	message: IChatMessage | IInternalMessage
 }
 
-export type { IQuestionnaireQuestion, IQuestionnaireAnswer, IQuestionnaire, ILlmMessage, IFollowUpResponse }
+export type { IQuestionnaireQuestion, IQuestionnaireAnswer, IQuestionnaire, ILlmMessage }

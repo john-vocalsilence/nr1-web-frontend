@@ -1,14 +1,7 @@
 import { followUpApiUrl, nr1Url } from '@/lib/constants';
-import type { IChatMessage, ILlmMessage, IQuestionnaire, IQuestionnaireAnswer } from '@/lib/interfaces'
+import type { ILlmMessage, IQuestionnaire, IQuestionnaireAnswer } from '@/lib/interfaces'
+import { useNr1Store } from '@/lib/store';
 
-// Local iterator state per questionnaire id
-const iterState = new Map<string, { qn?: IQuestionnaire; idx: number }>()
-
-function getState(id: string) {
-  const s = iterState.get(id) ?? { qn: undefined, idx: 0 }
-  if (!iterState.has(id)) iterState.set(id, s)
-  return s
-}
 
 function normalizeOptions(options: string[] | string | undefined): string[] {
   if (Array.isArray(options)) return options
@@ -25,10 +18,11 @@ function normalizeOptions(options: string[] | string | undefined): string[] {
   return []
 }
 
-export async function getQuestionnaire(qnId: string): Promise<IQuestionnaire> {
+export async function getNr1Questionnaire(qnId: string): Promise<IQuestionnaire> {
   const base = nr1Url || process.env.NEXT_NR1_API_URL || process.env.API_URL || ''
   const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qnId)}`
   const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, cache: 'no-store' })
+
   if (!res.ok) throw new Error(`Failed to fetch questionnaire: ${res.status}`)
   const qn = (await res.json()) as IQuestionnaire
 
@@ -38,52 +32,90 @@ export async function getQuestionnaire(qnId: string): Promise<IQuestionnaire> {
     id: q.id ?? idx + 1,
     options: normalizeOptions(q.options as any),
   }))
-
-  const st = getState(qnId)
-  st.qn = qn
-  st.idx = 0
   return qn
 }
 
-export async function getNextQuestion(qnId: string, payload: { message: IChatMessage | string }): Promise<ILlmMessage> {
-  // purely local progression over the already-fetched questionnaire
-  const st = getState(qnId)
-  if (!st.qn) throw new Error('Questionnaire not loaded')
+export async function getFollowUpQuestionnaire(qnId: string, answers: IQuestionnaireAnswer[]): Promise<IQuestionnaire> {
+  const base = followUpApiUrl || process.env.NEXT_FOLLOW_UP_API_URL || process.env.API_URL || ''
+  const url = `${base.replace(/\/$/, '')}/assessment`
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ questionnaire_id: qnId, answers }),
+  })
+  if (!res.ok) throw new Error(`Failed to request follow-up: ${res.status}`)
+  const qn = (await res.json()) as IQuestionnaire
+  qn.questions = (qn.questions || []).map((q, idx) => ({
+    ...q,
+    id: q.id ?? idx + 1,
+    options: normalizeOptions(q.options as any),
+  }))
+  return qn
+}
 
-  // If message is from user for a previous question, we just advance the index
-  const idx = st.idx
-  if (idx >= st.qn.questions.length) {
+export async function getNextQuestion(): Promise<ILlmMessage> {
+  // Grab Zustand state and actions
+  const { questionnaire, currentQuestionId } = useNr1Store.getState()
+
+  if (!questionnaire) {
     return {
       message: {
-        schema: 'text',
-        role: 'assistant',
-        msgId: `done-${Date.now()}`,
-        content: 'Obrigado por completar o questionário.',
-        timestamp: new Date().toISOString(),
+        schema: 'internal',
+        role: 'system',
+        code: 'error_no_questionnaire', 
+      }
+    }
+  }
+
+  const questions = questionnaire.questions
+  if (!questions?.length) {
+    return {
+      message: {
+        schema: 'internal',
+        role: 'system',
+        code: 'error_no_questions', 
+      }
+    }
+  }
+
+  // Determine next question index
+  const currentIndex = currentQuestionId
+    ? questions.findIndex((q) => q.id === currentQuestionId)
+    : -1
+
+  const nextIndex = currentIndex + 1
+
+  // If finished, return closing message
+  if (nextIndex >= questions.length) {
+    return {
+      message: {
+        schema: 'internal',
+        role: 'system',
+        code: 'event_no_next_question',
       },
     }
   }
 
-  const q = st.qn.questions[idx]
-  st.idx = idx + 1
+  const nextQuestion = questions[nextIndex]
+
   return {
     message: {
       msgId: `qmsg-${Date.now()}`,
       schema: 'question',
       role: 'assistant',
-      qId: q.id,
-      content: q.question,
-      type: q.type as any,
-      options: normalizeOptions(q.options as any),
+      qId: nextQuestion.id,
+      content: nextQuestion.question,
+      type: nextQuestion.type as any,
+      options: normalizeOptions(nextQuestion.options),
       timestamp: new Date().toISOString(),
     },
   }
 }
 
-export async function submitAnswers(qnId: string, answers: IQuestionnaireAnswer[]) {
+export async function submitNr1Answers(qnId: string, answers: IQuestionnaireAnswer[]) {
   const base = nr1Url || process.env.NEXT_NR1_API_URL || process.env.API_URL || ''
   const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qnId)}/`
-  console.log('[submitAnswers]', { qnId, answers })
+  // console.log('[submitNr1Answers]', { qnId, answers })
 
   const res = await fetch(url, {
     method: 'PATCH',
@@ -94,30 +126,17 @@ export async function submitAnswers(qnId: string, answers: IQuestionnaireAnswer[
   return await res.json()
 }
 
-export async function requestFollowUpQuestionnaire(qnId: string, answers: IQuestionnaireAnswer[]) {
-  const base = followUpApiUrl || process.env.NEXT_FOLLOW_UP_API_URL || process.env.API_URL || ''
-  const url = `${base.replace(/\/$/, '')}/assessment`
+export async function submitFollowUpAnswers(qnId: string, answers: IQuestionnaireAnswer[]) {
+  const base = nr1Url || process.env.NEXT_NR1_API_URL || process.env.API_URL || ''
+  const url = `${base.replace(/\/$/, '')}/nr1-questionnaires/${encodeURIComponent(qnId)}/`
+  // console.log('[submitFollowUpAnswers]', { qnId, answers })
+
   const res = await fetch(url, {
-    method: 'POST',
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ questionnaire_id: qnId, answers }),
+    body: JSON.stringify({ answers }),
   })
-  if (!res.ok) throw new Error(`Failed to request follow-up: ${res.status}`)
-  const data = await res.json()
-
-  // If a questionnaire is returned, prep local iterator for the same qId
-  if (data && data.questionnaire) {
-    const qn = data.questionnaire as IQuestionnaire
-    qn.questions = (qn.questions || []).map((q, idx) => ({
-      ...q,
-      id: q.id ?? idx + 1,
-      options: normalizeOptions(q.options as any),
-    }))
-    const st = getState(qnId)
-    st.qn = qn
-    st.idx = 0
-  }
-
-  return data
+  if (!res.ok) throw new Error(`Failed to submit answers: ${res.status}`)
+  return await res.json()
 }
 

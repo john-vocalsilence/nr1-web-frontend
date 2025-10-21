@@ -25,7 +25,7 @@ export default function ChatPage() {
     showFreeText,
     canSkip,
     setInput,
-    startQuestions,
+    consentAndStartNr1,
     leaveFlow,
     handleSubmit,
     submitAnswer,
@@ -197,7 +197,7 @@ export default function ChatPage() {
       >
         <div className="space-y-2 p-4 max-w-4xl mx-auto">
           {awaitingConsent && intro ? (
-            <Nr1IntroOverlay intro={intro} onContinue={startQuestions} onLeave={leaveFlow} disabled={isLoading} />
+            <Nr1IntroOverlay intro={intro} onContinue={consentAndStartNr1} onLeave={leaveFlow} disabled={isLoading} />
           ) : messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center py-12 text-center">
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">

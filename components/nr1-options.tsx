@@ -101,7 +101,7 @@ export default function Nr1Options({
                 type="radio"
                 name={`q-${currentQ.id}`}
                 value={index}
-                onChange={(e) => onSelect(e.target.value)}
+                onChange={(e) => onSelect(Number(e.target.value))}
                 className="sr-only"
                 disabled={isLoading}
               />
