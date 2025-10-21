@@ -138,10 +138,8 @@ export function useNr1Chat() {
       markSubmitted()
 
       let followRes: IFollowUpResponse | null = null
-      if ((nr1Api as any).requestFollowUpQuestionnaire) {
-        followRes = await (nr1Api as any).requestFollowUpQuestionnaire(String(qnId), answers || [])
-      }
-
+      followRes = await (nr1Api as any).requestFollowUpQuestionnaire(String(qnId), answers || [])
+      
       if (!followRes) {
         setIsLoading(false)
         return completeAndRedirect()
@@ -220,11 +218,18 @@ export function useNr1Chat() {
     e?.preventDefault()
     if (!questionnaire || isLoading || !currentQ || submitted) return
 
-    let response: string | number | undefined = provided
-    if (typeof response === "undefined") {
-      const value = input.trim()
-      if (!value) return
-      response = currentQ.type === "likert" && !Number.isNaN(Number(value)) ? Number(value) : value
+    if (typeof provided === "undefined") {
+      provided = input.trim()
+      if (!provided) return
+    }
+
+    let response: string | number = ""
+    if (currentQ.type === "radio" || currentQ.type === "select" || currentQ.type === "likert") {
+      const idx = Number(provided)
+      if (isNaN(idx) || idx < 0 || idx >= options.length) return
+      response = options[idx]
+    } else {
+      response = String(provided)
     }
 
     const userMessage: IChatMessage = {
@@ -236,7 +241,7 @@ export function useNr1Chat() {
     }
     setMessages((p) => [...p, userMessage])
 
-    addAnswer({ id: currentQ.id, response })
+    addAnswer({ id: currentQ.id, response: provided })
     setInput("")
     setIsLoading(true)
 
@@ -253,10 +258,9 @@ export function useNr1Chat() {
     }
   }
 
-  const submitAnswer = async ({ value }: { value: string }) => {
+  const submitAnswer = async ( value: string | number ) => {
     if (!currentQ || isLoading || submitted) return
-    const normalized = currentQ.type === "likert" && !Number.isNaN(Number(value)) ? Number(value) : value
-    return handleSubmit(undefined, normalized)
+    return handleSubmit(undefined, value)
   }
 
   const canSkip = !!currentQ && (!currentQ.required)

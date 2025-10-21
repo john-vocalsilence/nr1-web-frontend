@@ -7,7 +7,7 @@ type Props = {
   options: string[]
   isLoading: boolean
   version: number
-  onSelect: (value: string) => void
+  onSelect: (value: string | number) => void
   onSkip?: () => void
   isOpen: boolean
   onOpen: () => void
@@ -93,7 +93,7 @@ export default function Nr1Options({
           role="radiogroup"
           aria-label="Opções"
         >
-          {options.map((opt) => (
+          {options.map((opt, index) => (
             <label
               key={`q-${currentQ.id}-opt-${opt}`}
               className="flex items-center justify-center rounded-md border border-2 border-blue-900 bg-white text-blue-900 hover:bg-blue-50
@@ -102,7 +102,7 @@ export default function Nr1Options({
               <input
                 type="radio"
                 name={`q-${currentQ.id}`}
-                value={opt}
+                value={index}
                 onChange={(e) => onSelect(e.target.value)}
                 className="sr-only"
                 disabled={isLoading}
@@ -124,7 +124,7 @@ export default function Nr1Options({
             <button
               key={val}
               type="button"
-              onClick={() => onSelect(`${val} - ${texts[idx] || ""}`.trim())}
+              onClick={() => onSelect(idx)}
               className="rounded-md border border-blue-200 px-2 sm:px-3 py-2 text-xs sm:text-sm bg-white text-foreground hover:bg-blue-50 flex items-center gap-1 sm:gap-2 justify-start min-h-[40px]"
               aria-label={`Opção ${val} ${texts[idx] ? `- ${texts[idx]}` : ""}`}
               disabled={isLoading}

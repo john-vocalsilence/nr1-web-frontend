@@ -250,8 +250,8 @@ export default function ChatPage() {
                 options={options}
                 isLoading={isLoading}
                 version={optionsVersion}
-                onSelect={(value) => submitAnswer({ value })}
-                onSkip={(!currentQ?.required) ? () => submitAnswer({ value: 'Continuar' }) : undefined}
+                onSelect={(value) => submitAnswer(value)}
+                onSkip={(!currentQ?.required) ? () => submitAnswer('Continuar') : undefined}
                 isOpen={showOptions || !isSmallScreen}      // always open on md+
                 onOpen={() => setShowOptions(true)}
                 onClose={() => isSmallScreen && setShowOptions(false)}
