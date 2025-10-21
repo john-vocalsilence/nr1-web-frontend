@@ -220,12 +220,20 @@ export function useNr1Chat() {
   const canSkip = !!currentQ && (!currentQ.required)
   const skipQuestion = async () => {
     if (!currentQ || isLoading || submitted) return
-    // save empty/placeholder answer for non-required, then advance
-    console.log('[skipQuestion]', currentQ.id)
+    // console.log('[skipQuestion]', currentQ.id)
+    
+    // Add answer without creating a user message
     addAnswer({ id: currentQ.id, response: '' })
-    return handleSubmit(undefined, '')
-  }
+    setIsLoading(true)
 
+    // Get next question directly without showing user message
+    try {
+      const res = await nr1Api.getNextQuestion()
+      handleLlmResponse(res)
+    } finally {
+      setIsLoading(false)
+    }
+  }
   return {
     // state
     questionnaire,

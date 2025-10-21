@@ -5,7 +5,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { User } from 'lucide-react'
 import type { IChatMessage } from '@/lib/interfaces'
 
-function formatTime(ts: string | Date) {
+function formatTime(ts: string | Date | undefined): string {
+  if (!ts) return ''
   const d = new Date(ts)
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }

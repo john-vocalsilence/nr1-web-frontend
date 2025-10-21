@@ -3,7 +3,6 @@ import type {
   IQuestionnaire,
   ILlmMessage,
   IQuestionnaireQuestion,
-  IFollowUpResponse,
 } from '@/lib/interfaces/nr1.interfaces'
 import questionnaire from './questionnaire.json'
 import followup from './followup.json'
