@@ -1,4 +1,4 @@
-import { IChatMessage } from "./chat.interfaces"
+import { IChatMessage, IInternalMessage } from "./chat.interfaces"
 
 type TInputType = 'radio' | 'select' | 'likert' | 'textarea'
 
@@ -31,7 +31,7 @@ interface IFollowUpResponse {
 }
 
 interface ILlmMessage {
-	message: IChatMessage
+	message: IChatMessage | IInternalMessage
 }
 
 export type { IQuestionnaireQuestion, IQuestionnaireAnswer, IQuestionnaire, ILlmMessage, IFollowUpResponse }

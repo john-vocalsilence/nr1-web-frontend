@@ -1,10 +1,10 @@
-export type TChatRole = 'user' | 'assistant'
+export type TChatRole = 'user' | 'assistant' | 'system'
 
 export interface IBaseMessage {
   msgId?: string
   role: TChatRole
-  content: any
-  timestamp: string | Date
+  content?: string
+  timestamp?: string | Date
 }
 
 export interface ITextMessage extends IBaseMessage {
@@ -22,6 +22,11 @@ export interface IQuestionMessage extends IBaseMessage {
   options?: string[]
 }
 
+export interface IInternalMessage extends IBaseMessage {
+  schema: 'internal'
+  code: string | number | null | undefined
+}
+
 export type IChatMessage = ITextMessage | IQuestionMessage | IBaseMessage
 
 export function isTextMessage(m: IChatMessage): m is ITextMessage {
@@ -31,4 +36,3 @@ export function isTextMessage(m: IChatMessage): m is ITextMessage {
 export function isQuestionMessage(m: IChatMessage): m is IQuestionMessage {
   return (m as any)?.schema === 'question'
 }
-
