@@ -58,6 +58,13 @@ export function useNr1Chat() {
 
   function handleLlmResponse(res: ILlmMessage) {
     if (!res) return
+    if (res.message && isInternalMessage(res.message)) {
+      let msg = res.message as IInternalMessage
+      if (msg.code === 'event_no_next_question') {
+        !questionnaire?.id.startsWith('comp-') ? submitNr1AndGetFollowUp() : submitFollowUpAndRedirect()
+        return
+      }
+    }
     if (res.message) setMessages((p) => [...p, res.message])
     if (res.message && isQuestionMessage(res.message)) {
       setCurrentQuestionId(res.message.qId)
@@ -69,12 +76,7 @@ export function useNr1Chat() {
       } as IQuestionnaireQuestion)
       return
     }
-    if (res.message && isInternalMessage(res.message)) {
-      let msg = res.message as IInternalMessage
-      if (msg.code === 'event_no_next_question') {
-        !questionnaire?.id.startsWith('comp-') ? submitNr1AndGetFollowUp() : submitFollowUpAndRedirect()
-      }
-    }
+    
   }
 
   async function consentAndStartNr1() {
@@ -169,7 +171,7 @@ export function useNr1Chat() {
     setMessages((p) => [...p, thanks])
     setIsLoading(false)
     reset()
-    setTimeout(() => router.push(redirectUrl), 1500)
+    setTimeout(() => router.push(redirectUrl), 3000)
   }
 
   const handleSubmit = async (e?: React.FormEvent, provided?: string | number) => {
