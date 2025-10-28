@@ -11,7 +11,6 @@ import {
   type IQuestionnaireQuestion,
   IInternalMessage,
 } from "@/lib/interfaces"
-import { set } from "date-fns"
 
 export type IntroData = { org: string; dueStr: string; type: string }
 
@@ -156,7 +155,7 @@ export function useNr1Chat() {
       await nr1Api.submitNr1Answers(String(qnId), payload || [])
       markSubmitted()
 
-      const nextQn = await nr1Api.getFollowUpQuestionnaire(String(qnId), payload || [])
+      const nextQn = await nr1Api.getFollowUpQuestionnaire(String(qnId), questionnaire!.questions, payload || [])
       
       if (!nextQn || !nextQn.questions || nextQn.questions.length === 0) {
         return await gracefulExit()
@@ -187,7 +186,7 @@ export function useNr1Chat() {
     setIsLoading(true)
     const payload = useNr1Store.getState().answers
     try {
-      await nr1Api.submitFollowUpAnswers(String(qnId), payload || [])
+      await nr1Api.submitFollowUpAnswers(String(qnId), questionnaire!.questions, payload || [])
     } finally {
       setIsLoading(false)
       await gracefulExit()

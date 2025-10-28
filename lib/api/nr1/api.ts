@@ -1,5 +1,5 @@
 import { followUpApiUrl, nr1Url } from '@/lib/constants';
-import type { ILlmMessage, IQuestionnaire, IQuestionnaireAnswer } from '@/lib/interfaces'
+import type { ILlmMessage, IQuestionnaire, IQuestionnaireAnswer, IQuestionnaireQuestion } from '@/lib/interfaces'
 import { useNr1Store } from '@/lib/store';
 
 
@@ -35,13 +35,13 @@ export async function getNr1Questionnaire(qnId: string): Promise<IQuestionnaire>
   return qn
 }
 
-export async function getFollowUpQuestionnaire(qnId: string, answers: IQuestionnaireAnswer[]): Promise<IQuestionnaire> {
+export async function getFollowUpQuestionnaire(qnId: string, questions: IQuestionnaireQuestion[], answers: IQuestionnaireAnswer[]): Promise<IQuestionnaire> {
   const base = followUpApiUrl || process.env.NEXT_FOLLOW_UP_API_URL || process.env.API_URL || ''
   const url = `${base.replace(/\/$/, '')}/`
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ questionnaire_id: qnId, answers }),
+    body: JSON.stringify({ questionnaire_id: qnId, questions, answers }),
   })
   if (!res.ok) throw new Error(`Failed to request follow-up: ${res.status}`)
   const qn = (await res.json()) as IQuestionnaire
@@ -126,13 +126,13 @@ export async function submitNr1Answers(qnId: string, answers: IQuestionnaireAnsw
   return await res.json()
 }
 
-export async function submitFollowUpAnswers(qnId: string, answers: IQuestionnaireAnswer[]) {
+export async function submitFollowUpAnswers(qnId: string, questions: IQuestionnaireQuestion[], answers: IQuestionnaireAnswer[]) {
   const base = followUpApiUrl || process.env.NEXT_FOLLOW_UP_API_URL || process.env.API_URL || ''
   const url = `${base.replace(/\/$/, '')}/`
   const res = await fetch(url, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ questionnaire_id: qnId, answers }),
+    body: JSON.stringify({ questionnaire_id: qnId, questions, answers }),
   })
   if (!res.ok) throw new Error(`Failed to submit answers: ${res.status}`)
   return await res.json()
